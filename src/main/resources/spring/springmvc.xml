@@ -11,12 +11,12 @@
                            http://www.springframework.org/schema/mvc/spring-mvc.xsd
 ">
     <!-- 扫描被注解controller表示的类 -->
-    <context:component-scan base-package="com.youban.freemarker.controller" use-default-filters="false">
+    <context:component-scan base-package="com.youban.freemarker.controller">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
     <!-- 加载映射器 和 适配器 -->
-    <mvc:annotation-driven conversion-service="conversionService"/>
+    <mvc:annotation-driven />
     <mvc:default-servlet-handler/>
 
     <!-- 配置视图解析器 -->
