@@ -20,6 +20,11 @@
         <!-- 扫描加载数据配置文件 -->
         <context:property-placeholder location="classpath:other/database.properties"></context:property-placeholder>
 
+        <!-- 配置扫描 -->
+        <context:component-scan base-package="com.youban.freemarker">
+            <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        </context:component-scan>
+
         <!-- 初始化数据源 -->
         <bean id="dataSources" class="com.alibaba.druid.pool.DruidDataSource">
             <property name="driverClassName" value="${db.driverClassName}"></property>
@@ -32,6 +37,7 @@
         <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
             <property name="dataSource" ref="dataSources"/>
             <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+            <property name="mapperLocations" value="classpath:mybatis/mapper/*.xml"></property>
         </bean>
 
         <!-- 扫描mapper接口 -->
@@ -54,7 +60,7 @@
     
         <!-- aop 事物切入 -->
         <aop:config>
-            <aop:pointcut id="myPoincut" expression="execution(* com.youban.freemarker.service.impl.*(..))"/>
+            <aop:pointcut id="myPoincut" expression="execution(* com.youban.freemarker.service.impl.*.*(..))"/>
             <aop:advisor advice-ref="myAdvice" pointcut-ref="myPoincut"></aop:advisor>
         </aop:config>
 </beans>
