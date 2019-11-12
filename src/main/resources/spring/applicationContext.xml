@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://mybatis.org/schema/mybatis-spring
+                           http://mybatis.org/schema/mybatis-spring.xsd">
+
+
+        <!-- 扫描加载数据配置文件 -->
+        <context:property-placeholder location="classpath:other/database.properties"></context:property-placeholder>
+
+        <!-- 初始化数据源 -->
+        <bean id="dataSources" class="com.alibaba.druid.pool.DruidDataSource">
+            <property name="driverClassName" value="${db.driverClassName}"></property>
+            <property name="url" value="${db.url}"></property>
+            <property name="username" value="${db.username}"></property>
+            <property name="password" value="${db.password}"></property>
+        </bean>
+
+        <!-- 加载mybatis配置文件 -->
+        <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+            <property name="dataSource" ref="dataSources"/>
+            <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+        </bean>
+
+        <!-- 扫描mapper接口 -->
+        <mybatis-spring:scan base-package="com.youban.freemarker.mapper"/>
+
+        <!-- 配置事物管理器 -->
+        <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <!-- 自定数据源交给spring管理 -->
+            <property name="dataSource" ref="dataSources"/>
+        </bean>
+
+        <tx:advice id="myAdvice" transaction-manager="dataSourceTransactionManager">
+            <tx:attributes>
+                <tx:method name="select*" read-only="true"/>
+                <tx:method name="modify*" propagation="REQUIRED"></tx:method>
+                <tx:method name="remove*" propagation="REQUIRED"></tx:method>
+                <tx:method name="add*" propagation="REQUIRED"></tx:method>
+            </tx:attributes>
+        </tx:advice>
+    
+        <!-- aop 事物切入 -->
+        <aop:config>
+            <aop:pointcut id="myPoincut" expression="execution(* com.youban.freemarker.service.impl.*(..))"/>
+            <aop:advisor advice-ref="myAdvice" pointcut-ref="myPoincut"></aop:advisor>
+        </aop:config>
+</beans>
