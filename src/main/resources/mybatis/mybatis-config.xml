@@ -3,12 +3,19 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <settings>
-        <!--开启驼峰命名-->
-        <setting name="mapUnderscoreToCamelCase" value="true"/>
-        <setting name="jdbcTypeForNull" value="NULL"></setting>
-        <setting name="lazyLoadingEnabled" value="true"></setting>
-        <setting name="aggressiveLazyLoading" value="false"></setting>
-        <!--开启二级缓存-->
-        <setting name="cacheEnabled" value="true"></setting>
+        <!-- 设置log4j实现 -->
+        <setting name="logImpl" value="LOG4J"/>
+        <!-- 懒加载 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 按属性需要加载 -->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!-- 开启二级缓存 -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 设置缓存作用域 -->
+        <setting name="localCacheScope" value="SESSION"/>
     </settings>
+    <!-- 开启驼峰命名 -->
+    <typeAliases>
+        <package name="com.youban.freemarker.domain"/>
+    </typeAliases>
 </configuration>
